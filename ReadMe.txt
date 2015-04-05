@@ -19,6 +19,6 @@ DxErr9.lib to DxErr.lib
 *include for #include <dxerr9.h> to <dxerr.h>
 
 
-*On line 90 in d3dUtil.h, you will need to comment out out 
+*Around line 90 in d3dUtil.h, you will need to comment out out 
 //const float INFINITY = FLT_MAX;
 

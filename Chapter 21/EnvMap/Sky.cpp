@@ -10,6 +10,7 @@ Sky::Sky(const std::string& envmapFilename, float skyRadius)
 : mRadius(skyRadius)
 {
 	HR(D3DXCreateSphere(gd3dDevice, skyRadius, 30, 30, &mSphere, 0));
+	//HR(D3DXCreateBox(gd3dDevice, skyRadius, skyRadius, skyRadius, &mSphere, 0));
 	HR(D3DXCreateCubeTextureFromFile(gd3dDevice, envmapFilename.c_str(), &mEnvMap));
 
 	ID3DXBuffer* errors = 0;
@@ -64,11 +65,19 @@ void Sky::onResetDevice()
 	HR(mFX->OnResetDevice());
 }
 
+//The following variables handle unlocking the sky from the camera, I highly recommend increasing the camera speed if you do this.
+const bool LOCK_SKY_TO_CAMERA = true;//set this to false if you would like to be able to examine the sky object up close.
+bool lockedOnce = false;//the sky object needs to be set to the camera position at least once.
 void Sky::draw()
 {
 	// Sky always centered about camera's position.
 	D3DXMATRIX W;
-	D3DXVECTOR3 p = gCamera->pos();
+	D3DXVECTOR3 p;
+	if (LOCK_SKY_TO_CAMERA || !lockedOnce)
+	{
+		p = gCamera->pos();
+		lockedOnce = true;
+	}
 	D3DXMatrixTranslation(&W, p.x, p.y, p.z);
 	HR(mFX->SetMatrix(mhWVP, &(W*gCamera->viewProj())));
 	
